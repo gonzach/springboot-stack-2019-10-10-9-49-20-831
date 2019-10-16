@@ -17,4 +17,11 @@ public class EmployeeResource{
         return ResponseEntity.ok(employeeList);
     }
 
+    @PostMapping(path = "/AddAllEmployee", produces = {"application/json"})
+    public ResponseEntity<String> addAllEmployee(
+            @RequestBody List<Employee> employees) {
+        employeeList.addAll(employees);
+        return ResponseEntity.ok("Added all employees");
+    }
+
 }

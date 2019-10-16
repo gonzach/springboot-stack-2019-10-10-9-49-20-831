@@ -24,4 +24,17 @@ public class EmployeeResource{
         return ResponseEntity.ok("Added all employees");
     }
 
+    @DeleteMapping(path = "/remove/{id}", produces = {"application/json"})
+    public ResponseEntity<String> removeEmployee(@PathVariable int id) {
+
+        Employee removeEmployee = employeeList.stream()
+                .filter(employee -> id == employee.getId()).findFirst().orElse(null);
+        Boolean isDeleted = employeeList.remove(removeEmployee);
+
+        if ( isDeleted) {
+            return ResponseEntity.ok("Deleted Employee Record: " + removeEmployee.getName());
+        } else {
+            return ResponseEntity.ok("Can't delete" + id);
+        }
+    }
 }

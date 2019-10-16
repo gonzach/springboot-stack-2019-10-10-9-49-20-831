@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/employee")
@@ -18,9 +19,9 @@ public class EmployeeResource{
     }
 
     @PostMapping(path = "/AddAllEmployee", produces = {"application/json"})
-    public ResponseEntity<String> addAllEmployee(
-            @RequestBody List<Employee> employees) {
+    public ResponseEntity<String> addAllEmployee(@RequestBody List<Employee> employees) {
         employeeList.addAll(employees);
+
         return ResponseEntity.ok("Added all employees");
     }
 
@@ -34,7 +35,21 @@ public class EmployeeResource{
         if ( isDeleted) {
             return ResponseEntity.ok("Deleted Employee Record: " + removeEmployee.getName());
         } else {
-            return ResponseEntity.ok("Can't delete" + id);
+            return ResponseEntity.ok( id + " is not existing.");
         }
+    }
+
+    @PutMapping(path = "/change/{id}", produces = {"application/json"})
+    public ResponseEntity<String> updateEmployee(@PathVariable Integer id, @RequestBody Employee employee) {
+
+         employeeList = employeeList.stream()
+                .map(objectId -> {
+                    if(objectId.getId() == id) {
+                       return employee;
+                    }
+                    return objectId;
+                }).collect(Collectors.toList());
+
+        return ResponseEntity.ok("Updated Employee Record " + "\n id: " +  employee.getId() + "\n name: " + employee.getName() + "\n age: " + employee.getAge() + "\n gender: " + employee.getGender());
     }
 }
